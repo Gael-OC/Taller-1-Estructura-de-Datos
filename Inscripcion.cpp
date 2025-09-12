@@ -1,4 +1,5 @@
 #include "Inscripcion.hpp"
+#include "Curso.hpp"
 #include <iostream>
 
 void inscribirAlumno(Inscripcion*& inicio, int alumnoID, int cursoCodigo) {
@@ -32,21 +33,32 @@ bool estaInscrito(Inscripcion* inicio, int alumnoID, int cursoCodigo) {
     return false;
 }
 
-void listarCursosDeAlumno(Inscripcion* inicio, int alumnoID) {
+void listarCursosDeAlumno(Inscripcion* inicio, int alumnoID, Curso* cursos) {
     Inscripcion* actual = inicio;
+    bool alguno = false;
     while (actual != nullptr) {
-        if (actual->alumnoID == alumnoID)
-            std::cout << "Curso código: " << actual->cursoCodigo << std::endl;
+        if (actual->alumnoID == alumnoID) {
+            Curso* c = buscarCursoPorCodigo(cursos, actual->cursoCodigo);
+            if (c) std::cout << "Curso: " << c->nombre << " (codigo " << c->codigo << ")\n";
+            else   std::cout << "Curso codigo: " << actual->cursoCodigo << "\n";
+            alguno = true;
+        }
         actual = actual->siguiente;
     }
+    if (!alguno) std::cout << "El alumno no tiene cursos inscritos.\n";
 }
 
 void listarAlumnosDeCurso(Inscripcion* inicio, int cursoCodigo) {
     Inscripcion* actual = inicio;
+    bool alguno = false;
     while (actual != nullptr) {
-        if (actual->cursoCodigo == cursoCodigo)
+        if (actual->cursoCodigo == cursoCodigo) {
             std::cout << "Alumno ID: " << actual->alumnoID << std::endl;
+            alguno = true;
+        }
         actual = actual->siguiente;
     }
+    if (!alguno) std::cout << "El curso no tiene alumnos inscritos.\n";
 }
+
 

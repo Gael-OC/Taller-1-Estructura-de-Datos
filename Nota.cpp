@@ -8,7 +8,7 @@ void agregarNota(Nota*& inicio, int alumnoID, int cursoCodigo, float valor) {
 float promedioPorCurso(Nota* inicio, int alumnoID, int cursoCodigo) {
     Nota* actual = inicio;
     int cantidad = 0;
-    float suma = 0;
+    float suma = 0.0f;
     while (actual != nullptr) {
         if (actual->alumnoID == alumnoID && actual->cursoCodigo == cursoCodigo) {
             suma += actual->valor;
@@ -19,16 +19,30 @@ float promedioPorCurso(Nota* inicio, int alumnoID, int cursoCodigo) {
     return cantidad > 0 ? suma / cantidad : 0.0f;
 }
 
+// Promedio general igual al promedio de los promedios por curso del alumno.
 float promedioGeneral(Nota* inicio, int alumnoID) {
-    Nota* actual = inicio;
-    int cantidad = 0;
-    float suma = 0;
-    while (actual != nullptr) {
-        if (actual->alumnoID == alumnoID) {
-            suma += actual->valor;
-            cantidad++;
+    Nota* i = inicio;
+    float sumaPromedios = 0.0f;
+    int cursosDistintos = 0;
+
+    while (i != nullptr) {
+        if (i->alumnoID == alumnoID) {
+            int curso = i->cursoCodigo;
+            // Verificar si ya consideramos este curso antes
+            bool ya = false;
+            Nota* j = inicio;
+            while (j != i) {
+                if (j->alumnoID == alumnoID && j->cursoCodigo == curso) { ya = true; break; }
+                j = j->siguiente;
+            }
+            if (!ya) {
+                float p = promedioPorCurso(inicio, alumnoID, curso);
+                sumaPromedios += p;
+                cursosDistintos++;
+            }
         }
-        actual = actual->siguiente;
+        i = i->siguiente;
     }
-    return cantidad > 0 ? suma / cantidad : 0.0f;
+    return cursosDistintos > 0 ? (sumaPromedios / cursosDistintos) : 0.0f;
 }
+
